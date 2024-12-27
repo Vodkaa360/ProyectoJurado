@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Caratulado</title>
+</head>
+<body>
+    <form class="form" method="post">
+        {% csrf_token %}
+        <p class="title">Registrar Caratulado</p>
+        <p class="message">Completa el formulario para registrar un nuevo caratulado.</p>
+
+        {% if form.non_field_errors %}
+            <div class="error-message">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <label>
+            {{ form.nombre }}
+            <span>Nombre</span>
+            {{ form.nombre.errors }}
+        </label>
+        
+        <label>
+            {{ form.nro_expediente }}
+            <span>Número de Expediente</span>
+            {{ form.nro_expediente.errors }}
+        </label>
+        
+        <label>
+            {{ form.provincia }}
+            <span>Provincia</span>
+            {{ form.provincia.errors }}
+        </label>
+
+        <div id="extra-fields" style="display: none;">
+            <label>
+                {{ form.tribunal }}
+                <span>Tribunal</span>
+                {{ form.tribunal.errors }}
+            </label>
+          
+            <label>
+                {{ form.jurisdiccion }}
+                <span>Jurisdicción</span>
+                {{ form.jurisdiccion.errors }}
+            </label>
+        </div>
+
+        <label>
+            {{ form.evento }}
+            <span>Evento</span>
+            {{ form.evento.errors }}
+        </label>
+        
+        <label>
+            {{ form.fecha_inicio }}
+            <span>Fecha de Inicio</span>
+            {{ form.fecha_inicio.errors }}
+        </label>
+        
+        <label>
+            {{ form.fecha_limite }}
+            <span>Fecha Límite</span>
+            {{ form.fecha_limite.errors }}
+        </label>
+      
+        <button class="submit" type="submit">Guardar</button>
+    </form>
+
+    <style>
+        /* Estilos adaptados para CaratuladoForm en Django */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #050505;
+        }
+        .error-message {
+            color: red;
+        }
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 400px;
+            padding: 20px 38px 16px 25px;
+            border-radius: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+            box-sizing: border-box;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #00bfff;
+            margin: 0 auto 16px auto;
+        }
+
+        .message {
+            font-size: 14.5px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+        }
+
+        .form label {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .form input,
+        .form select {
+            background-color: #333;
+            color: #fff;
+            width: 100%;
+            padding: 8px 10px;
+            outline: none;
+            border: 1px solid rgba(105, 105, 105, 0.397);
+            border-radius: 10px;
+            font-size: medium;
+        }
+
+        .form label span {
+            color: rgba(255, 255, 255, 0.5);
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            font-size: 0.9em;
+            cursor: text;
+            transition: 0.3s ease;
+        }
+
+        .form input:focus + span,
+        .form input:not(:placeholder-shown) + span,
+        .form select:focus + span,
+        .form select:not(:placeholder-shown) + span {
+            color: #00bfff;
+            top: -10px;
+            font-size: 0.75em;
+            font-weight: 600;
+            background-color: #1a1a1a;
+            padding: 0 5px;
+        }
+
+        .submit {
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            background-color: #00bfff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit:hover {
+            background-color: #00a3d9;
+        }
+
+        /* Ajustes específicos para los campos adicionales */
+        #extra-fields {
+            display: none;
+            margin-top: 8px;
+        }
+
+        #extra-fields label {
+            display: block;
+            margin-bottom: 12px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const provinciaField = document.querySelector('#id_provincia');
+            const extraFields = document.getElementById('extra-fields');
+            const tribunalField = document.querySelector('#id_tribunal');
+            const jurisdiccionField = document.querySelector('#id_jurisdiccion');
+
+            // Función para mostrar/ocultar y añadir/quitar 'required'
+            function updateExtraFields() {
+                if (provinciaField.value === 'provincia') {
+                    extraFields.style.display = 'block';
+                    tribunalField.setAttribute('required', 'required');
+                    jurisdiccionField.setAttribute('required', 'required');
+                } else if (provinciaField.value === 'caba') {
+                    extraFields.style.display = 'none';
+                    tribunalField.removeAttribute('required');
+                    jurisdiccionField.removeAttribute('required');
+                }
+            }
+
+            // Ejecutar al cargar la página
+            updateExtraFields();
+
+            // Actualizar cada vez que cambia el valor de provincia
+            provinciaField.addEventListener('change', updateExtraFields);
+
+            // Depuración al enviar el formulario
+            document.querySelector('.form').addEventListener('submit', function (event) {
+                if (provinciaField.value === 'caba') {
+                    console.log("Seleccionado CABA, enviando formulario sin 'jurisdiccion' ni 'tribunal' como requeridos.");
+                } else {
+                    console.log("Formulario enviado con Provincia de Buenos Aires, requiere 'jurisdiccion' y 'tribunal'.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
